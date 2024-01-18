@@ -1,14 +1,15 @@
 import { prisma } from "../../prisma/index.js"
-import { logger } from "../application/logging.js"
 import { ResponseError } from "../errors/response-error.js"
 import { validate } from "../validation/index.js"
-import { registerUserValidation } from "../validation/user-validation.js"
+import { loginUserValidation, registerUserValidation } from "../validation/user-validation.js"
 import bcrypt from 'bcrypt'
+import { v4 as uuid } from "uuid"
+import jwt from "jsonwebtoken"
 
 const register = async (req) => {
 
     const user = validate(registerUserValidation, req)
-    
+
     const countUser = await prisma.user.count({
         where: {
             username: user.username
@@ -16,7 +17,7 @@ const register = async (req) => {
     })
 
     if (countUser === 1) {
-        throw new ResponseError(400, "Username already exist")
+        throw new ResponseError(401, "Username already exist")
     }
 
     user.password = await bcrypt.hash(user.password, 10)
@@ -32,6 +33,54 @@ const register = async (req) => {
     return result
 }
 
+const login = async (req) => {
+
+    const user = validate(loginUserValidation, req)
+
+    const queryUser = await prisma.user.findFirst({
+        where: {
+            username: user.username
+        }
+    })
+
+    if (!queryUser) {
+        throw new ResponseError(401, "Username not found")
+    }
+
+    const isCompare = await bcrypt.compare(user.password, queryUser.password)
+
+    if (!isCompare) {
+        throw new ResponseError(401, "Username or password wrong!")
+    }
+
+    const payload = {
+        name: queryUser.name,
+        username: user.username
+    }
+    const expiresIn = 1 * 60 * 60 * 1000
+
+    const token = jwt.sign(payload, process.env.PRIVATE_KEY, {
+        expiresIn: expiresIn
+    })
+
+    const updateToken = await prisma.user.update({
+        data: {
+            token: token
+        },
+        where: {
+            username: queryUser.username
+        },
+        select: {
+            name: true,
+            username: true,
+        }
+    })
+
+    return { updateToken, token }
+
+}
+
 export default {
-    register
+    register,
+    login
 }
