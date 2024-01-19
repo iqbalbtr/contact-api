@@ -12,8 +12,12 @@ export const authMiddleware = async(req, res, next) => {
         const queryToken = await prisma.user.findFirst({
             where: {
                 token: token
+            },
+            select: {
+                id: true
             }
         })
+
         if (!queryToken) {
             res.status(401).json({
                 message: "Access denied"
@@ -23,6 +27,7 @@ export const authMiddleware = async(req, res, next) => {
         try {
             const verifyToken = jwt.verify(token, process.env.PRIVATE_KEY) 
             req.userData = verifyToken
+            req.userData.userId = queryToken.id
             next()
         } catch(e) {
             res.status(401).json({
