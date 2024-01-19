@@ -1,7 +1,7 @@
 import { prisma } from "../../prisma/index.js"
 import { ResponseError } from "../errors/response-error.js"
 import { validate } from "../validation/index.js"
-import { loginUserValidation, registerUserValidation } from "../validation/user-validation.js"
+import { getUserValidaion, loginUserValidation, registerUserValidation, updatUserValidation } from "../validation/user-validation.js"
 import bcrypt from 'bcrypt'
 import { v4 as uuid } from "uuid"
 import jwt from "jsonwebtoken"
@@ -80,7 +80,71 @@ const login = async (req) => {
 
 }
 
+const get = async(req) => {
+   
+    const user = validate(getUserValidaion, req.username)
+
+    const queryUser = await prisma.user.findUnique({
+        where: {
+            username: user.username
+        },
+        select: {
+            username: true,
+            name: true
+        }
+    })
+
+    if (!queryUser) {
+        throw new ResponseError(401, "Username not found")
+    }
+
+    return queryUser
+}
+
+const update = async (req) => {
+    
+    const data = {}
+    data.username = req.userData.username
+
+    if (req.body.name) {
+        data.name = req.body.name
+    }
+    if(req.body.password) {
+        const password = await bcrypt.hash(req.body.password, 10)
+        data.password = password
+    }
+
+    return prisma.user.update({
+        where: {
+            username: data.username
+        },
+        data: data,
+        select: {
+            username: true,
+            name: true
+        }
+    })
+}
+
+const logout = async(req) => {
+    const result = await prisma.user.update({
+        where: {
+            username: req.userData.username
+        },
+        data: {
+            token: null
+        }, select: {
+        username: true
+        }
+    })
+
+    return result
+}
+
 export default {
     register,
-    login
+    login,
+    get,
+    update,
+    logout
 }

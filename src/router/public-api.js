@@ -1,7 +1,7 @@
 import express from 'express'
 import userController from '../controller/user-controller.js'
 
-export const router = new express.Router()
+export const publicRouter = new express.Router()
 
-router.post("/api/users", userController.register)
-router.post("/api/users/login", userController.login)
+publicRouter.post("/api/users", userController.register)
+publicRouter.post("/api/users/login", userController.login)
