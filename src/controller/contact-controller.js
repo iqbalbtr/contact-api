@@ -47,9 +47,21 @@ const remove = async (req, res, next) => {
     }
 }
 
+const getAll = async(req, res, next) => {
+    try {
+        const result = await contactService.getAll(req.userData.userId)
+        res.status(200).json({
+            data: result
+        })
+    } catch(e) {
+        next(e)
+    }
+}
+
 export default {
     create,
     get,
     update,
-    remove
+    remove,
+    getAll
 }

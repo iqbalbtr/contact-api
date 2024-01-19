@@ -80,8 +80,8 @@ const login = async (req) => {
 
 }
 
-const get = async(req) => {
-   
+const get = async (req) => {
+
     const user = validate(getUserValidaion, req.username)
 
     const queryUser = await prisma.user.findUnique({
@@ -102,14 +102,14 @@ const get = async(req) => {
 }
 
 const update = async (req) => {
-    
+
     const data = {}
     data.username = req.userData.username
 
     if (req.body.name) {
         data.name = req.body.name
     }
-    if(req.body.password) {
+    if (req.body.password) {
         const password = await bcrypt.hash(req.body.password, 10)
         data.password = password
     }
@@ -126,7 +126,7 @@ const update = async (req) => {
     })
 }
 
-const logout = async(req) => {
+const logout = async (req) => {
     const result = await prisma.user.update({
         where: {
             username: req.userData.username
@@ -134,7 +134,7 @@ const logout = async(req) => {
         data: {
             token: null
         }, select: {
-        username: true
+            username: true
         }
     })
 

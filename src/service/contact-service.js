@@ -99,9 +99,37 @@ const remove = async(reqContact, userId) => {
     return "OK"
 }
 
+const getAll = async(req) => {
+    const queryContact = await prisma.user.findFirst({
+        where: {
+            id: req
+        },
+        select: {
+            name: true,
+            username: true,
+            Contact: {
+                select: {
+                    id: true,
+                    first_name: true,
+                    last_name: true,
+                    email: true,
+                    phone: true
+                }
+            }
+        }
+    })
+
+    if (!queryContact) {
+        throw new ResponseError(404, "Contact is not found")
+    }
+
+    return queryContact
+}
+
 export default {
     create,
     get,
     update,
-    remove
+    remove,
+    getAll
 }
