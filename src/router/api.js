@@ -14,3 +14,4 @@ router.delete("/api/users/logout", userController.logout)
 // contact controller
 router.post("/api/contacts", contactController.create)
 router.get("/api/contacts/:contactId", contactController.get)
+router.patch("/api/contacts/:contactId", contactController.update)
