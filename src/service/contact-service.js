@@ -82,8 +82,26 @@ const update = async(req, userId) => {
     return updateContact
 }
 
+const remove = async(reqContact, userId) => {
+    const contactId = validate(getContactValidation, reqContact)
+
+    const deleteContact = await prisma.contact.delete({
+        where: {
+            id: contactId,
+            userId: userId
+        }
+    })
+
+    if (!deleteContact) {
+        throw new ResponseError(404, "Contact is not found")
+    }
+
+    return "OK"
+}
+
 export default {
     create,
     get,
-    update
+    update,
+    remove
 }
