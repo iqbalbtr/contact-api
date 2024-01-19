@@ -8,7 +8,9 @@ const createContactValidation = Joi.object({
     email: Joi.string().max(200).email().optional()
 })
 
+const getContactValidation = Joi.string().max(24).required()
 
 export {
-    createContactValidation
+    createContactValidation,
+    getContactValidation
 }
