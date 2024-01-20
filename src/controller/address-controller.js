@@ -38,8 +38,21 @@ const remove = async(req, res, next) => {
     }
 }
 
+const list = async(req, res, next) => {
+    try {
+        const contactId = req.params.contactId
+        const result = await addressService.list(contactId)
+        res.status(200).json({
+            data: result
+        })
+    } catch(e) {
+        next(e)
+    }
+}
+
 export default {
     create,
     update,
-    remove
+    remove,
+    list
 }

@@ -102,9 +102,27 @@ const remove = async (contactId, addresId) => {
     return
 }
 
+const list = async(req) => {
+    const contactId = validate(getContactValidation, req)
+    
+    return prisma.contact.findFirst({
+        where: {
+            id: contactId
+        },
+        select: {
+            email: true,
+            first_name: true,
+            last_name: true,
+            phone: true,
+            address: true
+        }
+    })
+}
+
 
 export default {
     create,
     update,
-    remove
+    remove,
+    list
 }
