@@ -143,7 +143,7 @@ const search = async (userData, req) => {
         select: {
             name: true,
             username: true,
-            Contact: {
+            contact: {
                 where: {
                     AND: filters,
                 },
