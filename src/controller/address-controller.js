@@ -16,7 +16,7 @@ const update = async(req, res, next) => {
         const reqUpdate = req.body
         const contactId = req.params.contactId
         reqUpdate.id = req.params.addressId
-        const result = await addressService.update(contactId, reqUpdate)
+        const result = await addressService.update(req.userData, contactId, reqUpdate)
         res.status(200).json({
             data: result
         })
@@ -29,7 +29,7 @@ const remove = async(req, res, next) => {
     try {
         const addressId = req.params.addressId
         const contactId = req.params.contactId
-        await addressService.remove(contactId, addressId)
+        await addressService.remove(req.userData ,contactId, addressId)
         res.status(200).json({
             message: "OK"
         })

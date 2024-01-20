@@ -45,25 +45,25 @@ const create = async (userData, contactId, req) => {
     return createContact
 }
 
-const update = async (contactId, req) => {
+const update = async (userData ,contactId, req) => {
 
     const address = validate(updateAddresValidation, req)
     const contact = await existingContact(req.id, contactId)
 
-    const countAddress = await prisma.address.count({
+    const countContact = await prisma.contact.count({
         where: {
-            id: address.id
+            id: contact.id,
+            userId: userData.userId
         }
     })
 
-    if (countAddress < 1) {
+    if (countContact < 1) {
         throw new ResponseError(404, "Address not found")
     }
 
     const updateAddress = await prisma.address.update({
         where: {
-            id: req.id,
-            contactId: contact.id
+            id : address.id
         },
         data: {
             city: address.city,
@@ -77,19 +77,19 @@ const update = async (contactId, req) => {
     return updateAddress
 }
 
-const remove = async (contactId, addresId) => {
+const remove = async (userData, contactId, addressId) => {
     
-    const address = validate(getContactValidation, addresId)
+    const address = validate(getContactValidation, addressId)
     const contact = validate(getContactValidation, contactId)
 
-    const countAddress = await prisma.address.count({
+    const countContact = await prisma.contact.count({
         where: {
-            id: address,
-            contactId: contact
+            id: contact,
+            userId: userData.userId
         }
     })
 
-    if (countAddress < 1) {
+    if (countContact < 1) {
         throw new ResponseError(404, "Address not found")
     }
 
