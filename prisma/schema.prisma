@@ -16,7 +16,7 @@ model User {
   password String
   name     String
   token    String?
-  Contact  Contact[]
+  contact  Contact[]
 }
 
 model Contact {
@@ -27,10 +27,10 @@ model Contact {
   email      String?
   userId     String   @db.ObjectId
   user       User     @relation(fields: [userId], references: [id])
-  Adress     Adress[]
+  address     Address[]
 }
 
-model Adress {
+model Address {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
   street      String?
   city        String?
