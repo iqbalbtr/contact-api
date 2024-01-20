@@ -1,6 +1,6 @@
 import express from "express"
 import { publicRouter } from "../router/public-api.js"
-import { errorMiddleware } from "../middleware/error-midlleware.js"
+import { errorMiddleware } from "../middleware/error-middleware.js"
 import { router } from "../router/api.js"
 
 export const web = express()
