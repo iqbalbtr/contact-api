@@ -32,10 +32,10 @@ model Contact {
 
 model Adress {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  street      String
-  city        String
-  province    String
-  country     String?
+  street      String?
+  city        String?
+  province    String?
+  country     String
   postal_code Int
   contactId   String  @db.ObjectId
   contact     Contact @relation(fields: [contactId], references: [id])
