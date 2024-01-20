@@ -8,6 +8,16 @@ const createAddresValidation = Joi.object({
     province: Joi.string().max(100).optional()
 })
 
+const updateAddresValidation = Joi.object({
+    id: Joi.string().length(24).required(),
+    street: Joi.string().max(255).optional(),
+    city: Joi.string().max(100).optional(),
+    country: Joi.string().max(100).required(),
+    postal_code: Joi.string().max(10).required(),
+    province: Joi.string().max(100).optional()
+})
+
 export {
-    createAddresValidation
+    createAddresValidation,
+    updateAddresValidation
 }

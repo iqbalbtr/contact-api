@@ -11,6 +11,21 @@ const create = async(req, res, next) => {
     }
 }
 
+const update = async(req, res, next) => {
+    try {
+        const reqUpdate = req.body
+        const contactId = req.params.contactId
+        reqUpdate.id = req.params.addressId
+        const result = await addressService.update(contactId, reqUpdate)
+        res.status(200).json({
+            data: result
+        })
+    } catch(e) {
+        next(e)
+    }
+} 
+
 export default {
-    create
+    create,
+    update
 }
