@@ -101,16 +101,16 @@ const get = async (req) => {
     return queryUser
 }
 
-const update = async (req) => {
+const update = async (userData, req) => {
 
     const data = {}
-    data.username = req.userData.username
+    data.username = userData.username
 
-    if (req.body.name) {
-        data.name = req.body.name
+    if (req.name) {
+        data.name = req.name
     }
-    if (req.body.password) {
-        const password = await bcrypt.hash(req.body.password, 10)
+    if (req.password) {
+        const password = await bcrypt.hash(req.password, 10)
         data.password = password
     }
 
@@ -129,7 +129,7 @@ const update = async (req) => {
 const logout = async (req) => {
     const result = await prisma.user.update({
         where: {
-            username: req.userData.username
+            username: req.username
         },
         data: {
             token: null

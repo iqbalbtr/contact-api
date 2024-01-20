@@ -4,7 +4,7 @@ import Joi from "joi"
 const createContactValidation = Joi.object({
     first_name: Joi.string().max(100).required(),
     last_name: Joi.string().max(100).optional(),
-    phone: Joi.string().max(20).required(),
+    phone: Joi.string().max(20).required().pattern(/^\d+$/),
     email: Joi.string().max(200).email().optional()
 })
 
@@ -14,7 +14,7 @@ const updateContactValidation = Joi.object({
     id: Joi.string().length(24).required(),
     first_name: Joi.string().max(100).required(),
     last_name: Joi.string().max(100).optional(),
-    phone: Joi.string().max(20).required(),
+    phone: Joi.string().max(20).required().pattern(/^\d+$/),
     email: Joi.string().max(200).email().optional()
 })
 

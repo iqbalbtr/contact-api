@@ -36,7 +36,8 @@ const get = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const result = await userService.update(req)
+        const reqUpdate = req.body
+        const result = await userService.update(req.userData, reqUpdate)
         res.status(200).json({
             data: result
         })
@@ -47,7 +48,7 @@ const update = async (req, res, next) => {
 
 const logout = async(req, res, next) => {
     try {
-        const result = await userService.logout(req)
+        const result = await userService.logout(req.userData)
         res.status(200).json({
             data: result,
             message: "OK"
