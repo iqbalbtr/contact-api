@@ -25,7 +25,21 @@ const update = async(req, res, next) => {
     }
 } 
 
+const remove = async(req, res, next) => {
+    try {
+        const addressId = req.params.addressId
+        const contactId = req.params.contactId
+        await addressService.remove(contactId, addressId)
+        res.status(200).json({
+            message: "OK"
+        })
+    } catch(e) {
+        next(e)
+    }
+}
+
 export default {
     create,
-    update
+    update,
+    remove
 }

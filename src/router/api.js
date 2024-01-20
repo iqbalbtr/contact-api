@@ -22,3 +22,4 @@ router.delete("/api/contacts/:contactId", contactController.remove)
 // addres controller
 router.post("/api/contacts/:contactId/address", addressController.create)
 router.patch("/api/contacts/:contactId/address/:addressId", addressController.update)
+router.delete("/api/contacts/:contactId/address/:addressId", addressController.remove)

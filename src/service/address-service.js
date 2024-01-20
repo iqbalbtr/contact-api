@@ -4,7 +4,7 @@ import { createAddresValidation, updateAddresValidation } from "../validation/ad
 import { getContactValidation } from "../validation/contact-validation.js"
 import { validate } from "../validation/index.js"
 
-const existingContact = async(userData, req) => {
+const existingContact = async (userData, req) => {
     const contactId = validate(getContactValidation, req)
 
     const queryContact = await prisma.contact.findFirst({
@@ -21,8 +21,8 @@ const existingContact = async(userData, req) => {
     return queryContact
 }
 
-const create = async(userData, contactId, req) => {
-    
+const create = async (userData, contactId, req) => {
+
     const address = validate(createAddresValidation, req)
     const contact = await existingContact(userData, contactId)
 
@@ -45,8 +45,8 @@ const create = async(userData, contactId, req) => {
     return createContact
 }
 
-const update = async(contactId, req) => {
-    
+const update = async (contactId, req) => {
+
     const address = validate(updateAddresValidation, req)
     const contact = await existingContact(req.id, contactId)
 
@@ -77,8 +77,34 @@ const update = async(contactId, req) => {
     return updateAddress
 }
 
+const remove = async (contactId, addresId) => {
+    
+    const address = validate(getContactValidation, addresId)
+    const contact = validate(getContactValidation, contactId)
+
+    const countAddress = await prisma.address.count({
+        where: {
+            id: address,
+            contactId: contact
+        }
+    })
+
+    if (countAddress < 1) {
+        throw new ResponseError(404, "Address not found")
+    }
+
+    await prisma.address.delete({
+        where: {
+            id: address
+        }
+    })
+
+    return
+}
+
 
 export default {
     create,
-    update
+    update,
+    remove
 }
