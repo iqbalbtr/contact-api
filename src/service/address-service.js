@@ -1,27 +1,35 @@
 import { prisma } from "../../prisma/index.js"
 import { ResponseError } from "../errors/response-error.js"
 import { createAddresValidation } from "../validation/address-validation.js"
+import { getContactValidation } from "../validation/contact-validation.js"
 import { validate } from "../validation/index.js"
 
-const create = async(userData, contactId, req) => {
-    
-    const address = validate(createAddresValidation, req)
+const existingContact = async(userData, req) => {
+    const contactId = validate(getContactValidation, req)
 
-    const countContact = await prisma.contact.count({
+    const queryContact = await prisma.contact.findFirst({
         where: {
             id: contactId,
             userId: userData.userId
         }
     })
 
-    if (countContact < 1) {
+    if (!queryContact) {
         throw new ResponseError(404, "Contact is not found")
     }
 
-    address.postal_code = +address.postal_code
-    address.contactId = contactId 
+    return queryContact
+}
 
-    const createContact = await prisma.adress.create({
+const create = async(userData, contactId, req) => {
+    
+    const address = validate(createAddresValidation, req)
+    const contact = await existingContact(userData, contactId)
+
+    address.postal_code = +address.postal_code
+    address.contactId = contact.id
+
+    const createContact = await prisma.address.create({
         data: address,
         select: {
             city: true,
